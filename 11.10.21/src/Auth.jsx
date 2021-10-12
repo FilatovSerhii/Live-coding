@@ -1,61 +1,53 @@
-import React, { Component } from 'react';
-import Spinner from './Spinner.jsx';
+import React from 'react';
 import Login from './Login.jsx';
 import Logout from './Logout.jsx';
+import Spinner from './Spinner.jsx';
 
-//input - props(obj)
-//output - jsx
+// input:props(obj)
+// output:JSX
 
-
-// алгоритм
-// 1 по умолчанию нужно показать компаненту по дефолту
-// 2 после клика на логин нужно скрыть логин и показать спинер на 2секунды
-// 3 после 2х секунд нужно скрыть спинер и поазать логаут
-// 4 после клика Логаут, скрыть логаут и показать логин 
-
+// algo
+// 1. show Login by default
+// 2. after login click -hide Login & show Spinner for 2 seconds
+// 3. after 2 seconds -hide spinner & show Logout
+// 4. after Logout click- hide Logout & show Login
 
 class Auth extends React.Component {
-  constructor(props){
-    super(props)
-  
-  this.state = {
-    loading: false,
-  } 
+  state = {
+    isLoggedIn: false,
+    isProcessing: false,
   };
 
-  toggleSpinner(loading) {
-    this.setState({ loading });
-  }
-
-  handleLogin() {
-    this.toggleSpinner(true);
-
+  loginHandler = () => {
+    this.setState({ isProcessing: true });
     setTimeout(() => {
-      this.toggleSpinner(false);
-
-      this.setState({
-        isLoggedIn: false,
-      });
+      this.setState({ isProcessing: false, isLoggedIn: true });
     }, 2000);
-  }
+  };
 
-  handleLogout() {
-    this.setState({
-      isLoggedIn: true,
-    });
-  }
+  logoutHandler = () => {
+    this.setState({ isLoggedIn: false });
+  };
 
   render() {
-    if (this.state.loading) {
-      return <Spinner size={50} />;
+    const { isLoggedIn, isProcessing } = this.state;
+    // const isLoggedIn=this.state.isLoggedIn
+    if (isProcessing) {
+      return <Spinner />;
     }
 
-    return this.state.isLoggedIn ? (
-      <Login onLogin={this.handleLogin.bind(this)} />
-    ) : (
-      <Logout onLogout={this.handleLogout.bind(this)} />
-    );
+    if (isLoggedIn) {
+      return <Logout onLogout={this.logoutHandler} />;
+    }
+
+    return <Login onLogin={this.loginHandler} />;
   }
 }
 
 export default Auth;
+
+// 0. make a layout(html)
+// 1. split on components
+// 2. static version in react
+// 3. declare state and props
+// 4. write logic
